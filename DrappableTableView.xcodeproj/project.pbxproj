@@ -13,9 +13,12 @@
 		83917AC21FCEA20500138519 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83917AC11FCEA20500138519 /* Assets.xcassets */; };
 		83917AC51FCEA20500138519 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83917AC31FCEA20500138519 /* LaunchScreen.storyboard */; };
 		83917AC81FCEA20500138519 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 83917AC71FCEA20500138519 /* main.m */; };
+		CC6903C377DFFF05317EBD0C /* libPods-DrappableTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F352E8CFE8F65BFF429F52E /* libPods-DrappableTableView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F352E8CFE8F65BFF429F52E /* libPods-DrappableTableView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DrappableTableView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6228EC7A9CAF1FEC937731FF /* Pods-DrappableTableView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrappableTableView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DrappableTableView/Pods-DrappableTableView.debug.xcconfig"; sourceTree = "<group>"; };
 		83917AB51FCEA20500138519 /* DrappableTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrappableTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83917AB81FCEA20500138519 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		83917AB91FCEA20500138519 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -26,6 +29,7 @@
 		83917AC41FCEA20500138519 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		83917AC61FCEA20500138519 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83917AC71FCEA20500138519 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E3ECBDDC8D6CF7C03A41E74E /* Pods-DrappableTableView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrappableTableView.release.xcconfig"; path = "Pods/Target Support Files/Pods-DrappableTableView/Pods-DrappableTableView.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +37,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC6903C377DFFF05317EBD0C /* libPods-DrappableTableView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1BDBA72A5663856C7E057CE8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6228EC7A9CAF1FEC937731FF /* Pods-DrappableTableView.debug.xcconfig */,
+				E3ECBDDC8D6CF7C03A41E74E /* Pods-DrappableTableView.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		550E62561ED3D705AAFDC6DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0F352E8CFE8F65BFF429F52E /* libPods-DrappableTableView.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		83917AAC1FCEA20500138519 = {
 			isa = PBXGroup;
 			children = (
 				83917AB71FCEA20500138519 /* DrappableTableView */,
 				83917AB61FCEA20500138519 /* Products */,
+				1BDBA72A5663856C7E057CE8 /* Pods */,
+				550E62561ED3D705AAFDC6DE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,9 +102,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83917ACB1FCEA20500138519 /* Build configuration list for PBXNativeTarget "DrappableTableView" */;
 			buildPhases = (
+				3A1EAA8E492EA97DAB3B5709 /* [CP] Check Pods Manifest.lock */,
 				83917AB11FCEA20500138519 /* Sources */,
 				83917AB21FCEA20500138519 /* Frameworks */,
 				83917AB31FCEA20500138519 /* Resources */,
+				E681FE463C30547B1CC94A5E /* [CP] Embed Pods Frameworks */,
+				4407D3E0F9FA57E1BD7F9BE7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -136,6 +163,57 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3A1EAA8E492EA97DAB3B5709 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DrappableTableView-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4407D3E0F9FA57E1BD7F9BE7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DrappableTableView/Pods-DrappableTableView-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E681FE463C30547B1CC94A5E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DrappableTableView/Pods-DrappableTableView-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		83917AB11FCEA20500138519 /* Sources */ = {
@@ -276,6 +354,7 @@
 		};
 		83917ACC1FCEA20500138519 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6228EC7A9CAF1FEC937731FF /* Pods-DrappableTableView.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -290,6 +369,7 @@
 		};
 		83917ACD1FCEA20500138519 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E3ECBDDC8D6CF7C03A41E74E /* Pods-DrappableTableView.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
