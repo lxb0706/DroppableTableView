@@ -10,14 +10,13 @@
 
 #import <Masonry/Masonry.h>
 
-@interface ViewController ()<UIScrollViewDelegate>
+@interface ViewController ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *containerView;
 
-@property (nonatomic, strong) UIView *redView;
-@property (nonatomic, strong) UIView *greenView;
-@property (nonatomic, strong) UIView *blueView;
+@property (nonatomic, strong) NSMutableArray<UITableView *> *tableViews;
+@property (nonatomic, strong) NSMutableArray<NSMutableArray<NSString *> *> *dataArrays;
 
 @end
 
@@ -46,30 +45,29 @@
         }
     }];
     
-    
-    [self.containerView addSubview:self.redView];
-    [self.redView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.containerView).mas_offset(30);
-        make.top.equalTo(self.containerView).mas_offset(20);
-        make.bottom.lessThanOrEqualTo(self.containerView).mas_offset(-20);
-        make.width.mas_equalTo(CGRectGetWidth(self.view.frame) - 60);
-        make.height.mas_equalTo(500);
-    }];
-    
-    [self.containerView addSubview:self.greenView];
-    [self.greenView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.redView.mas_trailing).mas_offset(20);
-        make.top.equalTo(self.redView);
-        make.size.equalTo(self.redView);
-    }];
-    
-    [self.containerView addSubview:self.blueView];
-    [self.blueView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.greenView.mas_trailing).mas_offset(20);
-        make.top.equalTo(self.redView);
-        make.size.equalTo(self.redView);
-        make.trailing.equalTo(self.containerView).mas_offset(-30);
-    }];
+    UIView *preView = nil;
+    for (UITableView *tableView in self.tableViews) {
+        
+        CGFloat viewHeight = self.dataArrays[tableView.tag].count * tableView.rowHeight;
+        [self.containerView addSubview:tableView];
+        [tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.containerView).mas_offset(20);
+            make.width.mas_equalTo(CGRectGetWidth(self.view.frame) - 60);
+            make.height.mas_equalTo(viewHeight);
+            make.bottom.lessThanOrEqualTo(self.containerView).mas_offset(-30);
+            if (preView) {
+                make.leading.equalTo(preView.mas_trailing).mas_offset(20);
+            }else{
+                make.leading.equalTo(self.containerView).mas_offset(30);
+            }
+        }];
+        preView = tableView;
+    }
+    if (preView) {
+        [preView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.trailing.equalTo(self.containerView).mas_offset(-30);
+        }];
+    }
 }
 
 //MARK: - UIScrollView Delegate
@@ -91,9 +89,43 @@
     }
 }
 
+
+//MARK: - UITableView Delegate
+
+//MARK: - UITableView DataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    NSInteger count = 0;
+    for (UITableView *view in self.tableViews) {
+        if (view.tag == tableView.tag) {
+            count = self.dataArrays[tableView.tag].count;
+        }
+    }
+    return count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSString *cellIdentifier = @"cellIdentifeir";
+    for (UITableView *view in self.tableViews) {
+        if (view.tag == tableView.tag) {
+            cellIdentifier = [NSString stringWithFormat:@"cellIdentifier%ld",view.tag];
+            break;
+        }
+    }
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    
+    cell.textLabel.text = self.dataArrays[tableView.tag][indexPath.row];
+    return cell;
+}
+
+//MARK: - private methods
 - (void)hanleEndDraggingScrollView:(UIScrollView *)scrollView{
     CGFloat offsetX = 0;
-    CGFloat width = CGRectGetWidth(self.redView.frame);
+    CGFloat width = CGRectGetWidth(self.view.frame) - 60;
 
     if (scrollView.contentOffset.x <= width/2 + 30) {
         offsetX = 0;
@@ -106,7 +138,29 @@
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         scrollView.contentOffset = CGPointMake(offsetX, 0);
     } completion:nil];
+}
 
+- (UITableView *)createTableViewWithTag:(NSInteger) tag{
+    
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    tableView.tableFooterView = [UIView new];
+    tableView.rowHeight = 44;
+    tableView.tag = tag;
+    tableView.layer.cornerRadius = 3;
+    tableView.layer.masksToBounds = YES;
+    return tableView;
+}
+
+- (NSMutableArray<NSString *> *)createTextArrayWithTag:(NSInteger)tag{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSString *text = [NSString stringWithFormat:@"No%ld.",tag];
+    NSInteger count = arc4random()%15 + 5;
+    for (NSInteger i = 0; i < count; i ++) {
+        [array addObject:[NSString stringWithFormat:@"%@ Text%@",text,@(i)]];
+    }
+    return [array copy];
 }
 
 
@@ -129,38 +183,26 @@
     return _containerView;
 }
 
-- (UIView *)redView{
-
-    if (!_redView) {
-        UIView *view = [UIView new];
-        view.backgroundColor = [UIColor redColor];
-        view.layer.cornerRadius = 3;
-        view.layer.masksToBounds = YES;
-        _redView = view;
+- (NSMutableArray<UITableView *> *)tableViews{
+    if (!_tableViews) {
+ 
+        _tableViews = [[NSMutableArray alloc] init];
+        [_tableViews addObject:[self createTableViewWithTag:0]];
+        [_tableViews addObject:[self createTableViewWithTag:1]];
+        [_tableViews addObject:[self createTableViewWithTag:2]];
     }
-    return _redView;
+    return _tableViews;
 }
 
-- (UIView *)greenView{
-    if (!_greenView) {
-        UIView *view = [UIView new];
-        view.backgroundColor = [UIColor greenColor];
-        view.layer.cornerRadius = 3;
-        view.layer.masksToBounds = YES;
-        _greenView = view;
+- (NSMutableArray<NSMutableArray<NSString *> *> *)dataArrays{
+    if (!_dataArrays) {
+        
+        _dataArrays = [[NSMutableArray alloc] init];
+        [_dataArrays addObject:[self createTextArrayWithTag:0]];
+        [_dataArrays addObject:[self createTextArrayWithTag:1]];
+        [_dataArrays addObject:[self createTextArrayWithTag:2]];
     }
-    return _greenView;
-}
-
-- (UIView *)blueView{
-    if (!_blueView) {
-        UIView *view = [UIView new];
-        view.backgroundColor = [UIColor blueColor];
-        view.layer.cornerRadius = 3;
-        view.layer.masksToBounds = YES;
-        _blueView = view;
-    }
-    return _blueView;
+    return _dataArrays;
 }
 
 
