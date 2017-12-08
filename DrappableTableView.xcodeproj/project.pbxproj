@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		83887DE81FD578590079CD39 /* NSTimer+DT.m in Sources */ = {isa = PBXBuildFile; fileRef = 83887DE71FD578590079CD39 /* NSTimer+DT.m */; };
 		83917ABA1FCEA20500138519 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 83917AB91FCEA20500138519 /* AppDelegate.m */; };
 		83917ABD1FCEA20500138519 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83917ABC1FCEA20500138519 /* ViewController.m */; };
 		83917AC01FCEA20500138519 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83917ABE1FCEA20500138519 /* Main.storyboard */; };
@@ -19,6 +20,8 @@
 /* Begin PBXFileReference section */
 		0F352E8CFE8F65BFF429F52E /* libPods-DrappableTableView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DrappableTableView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6228EC7A9CAF1FEC937731FF /* Pods-DrappableTableView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrappableTableView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DrappableTableView/Pods-DrappableTableView.debug.xcconfig"; sourceTree = "<group>"; };
+		83887DE61FD578590079CD39 /* NSTimer+DT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTimer+DT.h"; sourceTree = "<group>"; };
+		83887DE71FD578590079CD39 /* NSTimer+DT.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+DT.m"; sourceTree = "<group>"; };
 		83917AB51FCEA20500138519 /* DrappableTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrappableTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83917AB81FCEA20500138519 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		83917AB91FCEA20500138519 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -91,6 +94,8 @@
 				83917AC31FCEA20500138519 /* LaunchScreen.storyboard */,
 				83917AC61FCEA20500138519 /* Info.plist */,
 				83917AC71FCEA20500138519 /* main.m */,
+				83887DE61FD578590079CD39 /* NSTimer+DT.h */,
+				83887DE71FD578590079CD39 /* NSTimer+DT.m */,
 			);
 			path = DrappableTableView;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83887DE81FD578590079CD39 /* NSTimer+DT.m in Sources */,
 				83917ABD1FCEA20500138519 /* ViewController.m in Sources */,
 				83917AC81FCEA20500138519 /* main.m in Sources */,
 				83917ABA1FCEA20500138519 /* AppDelegate.m in Sources */,

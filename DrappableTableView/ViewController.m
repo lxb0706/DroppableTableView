@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "NSTimer+DT.h"
 
 #import <Masonry/Masonry.h>
 
@@ -23,6 +24,10 @@
 @property (nonatomic, weak) UITableView *sourceTableView;
 @property (nonatomic, weak) NSIndexPath *sourceIndexPath;
 @property (nonatomic, weak) UIView *snapshot;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, assign) CGPoint snapOriginPt;
+@property (nonatomic, assign) CGPoint snapNewPt;
+
 
 @end
 
@@ -33,7 +38,7 @@
 
     [self setupView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureRecognized:)];
-    [self.view addGestureRecognizer:longPress];
+    [self.scrollView addGestureRecognizer:longPress];
 }
 
 
@@ -73,10 +78,10 @@
     UIView *snapshot = [self createSnapshoFromView:cell];
     // 添加快照至tableView中
     __block CGPoint center = cell.center;
-    center = [tableView convertPoint:center toView:self.view];
+    center = [tableView convertPoint:center toView:self.scrollView];
     snapshot.center = center;
     snapshot.alpha = 0.0;
-    [self.view addSubview:snapshot];
+    [self.scrollView addSubview:snapshot];
     // 按下的瞬间执行动画
     [UIView animateWithDuration:0.3 animations:^{
         center.y = location.y;
@@ -88,6 +93,7 @@
     } completion:^(BOOL finished) {
         cell.hidden = YES;
     }];
+    self.snapOriginPt = center;
     self.snapshot = snapshot;
 }
 
@@ -114,6 +120,7 @@
     CGFloat moveX = Npoint.x - Ppoint.x;
     center.x += moveX;
     self.snapshot.center = center;
+    self.snapNewPt = center;
     // 是否移动了
     if (indexPath && ![indexPath isEqual:self.sourceIndexPath] && [tableView isEqual:self.sourceTableView]) {
         
@@ -156,7 +163,7 @@
     cell.alpha = 0.0;
     // 将快照恢复到初始状态
     [UIView animateWithDuration:0.25 animations:^{
-        self.snapshot.center = [self.sourceTableView convertPoint:cell.center toView:self.view];;
+        self.snapshot.center = [self.sourceTableView convertPoint:cell.center toView:self.scrollView];;
         self.snapshot.transform = CGAffineTransformIdentity;
         self.snapshot.alpha = 0.0;
         cell.alpha = 1.0;
@@ -172,14 +179,14 @@
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
     UIGestureRecognizerState state = longPress.state;
-    CGPoint location = [longPress locationInView:self.view];
+    CGPoint location = [longPress locationInView:self.scrollView];
     
     NSIndexPath *indexPath = nil;
     UITableView *tableView = nil;
     for (UITableView *view in self.tableViews) {
         if (CGRectContainsPoint(view.frame, location)) {
             tableView = view;
-            CGPoint pt = [self.view convertPoint:location toView:view];
+            CGPoint pt = [self.scrollView convertPoint:location toView:view];
             indexPath = [tableView indexPathForRowAtPoint:pt];
             break;
         }
@@ -190,7 +197,9 @@
 
     switch (state) {
         case UIGestureRecognizerStateBegan: {// 已经开始按下
+            [self startTimer];
             [self handleLongPressStateBeganWithTableView:tableView indexPath:indexPath location:location];
+            
             break;
         }
         case UIGestureRecognizerStateChanged: {// 移动过程中
@@ -198,6 +207,10 @@
             break;
         }
         default: {// 长按手势取消状态
+            [self stopTimer];
+            [self hanleEndDraggingScrollView:self.scrollView];
+            self.snapNewPt = CGPointZero;
+            self.snapOriginPt = CGPointZero;
             [self handleLongPressOther];
             break;
         }
@@ -311,9 +324,7 @@
         offsetX = 2*width - 10 + 30 + 20;
     }
     
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        scrollView.contentOffset = CGPointMake(offsetX, 0);
-    } completion:nil];
+    scrollView.contentOffset = CGPointMake(offsetX, 0);
 }
 
 - (UITableView *)createTableViewWithTag:(NSInteger) tag{
@@ -339,6 +350,51 @@
     return array;
 }
 
+- (void)handleTimeUp{
+
+    
+    CGFloat width = CGRectGetWidth(self.view.frame);
+    CGPoint pt = [self.view convertPoint:self.snapNewPt fromView:self.scrollView];
+    if (pt.x >= width/3 && pt.x <= 2*width/3) {
+        NSLog(@"o.x = %lf,new.x = %lf",self.snapOriginPt.x,pt.x);
+        return ;
+    }
+    CGFloat offset = 0;
+    if (pt.x> self.snapOriginPt.x) {
+//        offset = pt.x- self.snapOriginPt.x - width/6;
+        offset = 1;
+    }else{
+        offset = -1;
+//        offset = pt.x - self.snapOriginPt.x + width/6;
+    }
+    
+//    offset = offset/10;
+    CGPoint offsetPt = self.scrollView.contentOffset;
+    offsetPt.x += offset;
+    if (offsetPt.x >= 0 && offsetPt.x <= 2*width - 50) {
+        self.scrollView.contentOffset = offsetPt;
+    }
+}
+
+- (void)startTimer{
+
+    if(self.timer){
+        self.timer = nil;
+    }
+
+    __weak typeof(self) weakSelf = self;
+    self.timer = [NSTimer dt_scheduledTimerWithTimeInterval:0.015 action:^{
+        [weakSelf handleTimeUp];
+    } repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+}
+
+- (void)stopTimer{
+    
+    [self.timer invalidate];
+    self.timer = nil;
+}
+
 
 //MARK: - setter & getter
 - (UIScrollView *)scrollView{
@@ -346,6 +402,9 @@
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.delegate = self;
 //        _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+//        _scrollView.alwaysBounceHorizontal = YES;
+//        _scrollView.bounces = YES;
+//        [_scrollView setScrollEnabled:YES];
         _scrollView.backgroundColor = [UIColor colorWithRed:52.0/255.0 green:51.0/255.0 blue:60.0/255.0 alpha:1];
     }
     return _scrollView;
